@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daphne's Café — Guwahati</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:    #0F1A0C;
+      --forest: #1C3026;
+      --sage:   #3B5E48;
+      --gold:   #C9973E;
+      --gilt:   #E8C97A;
+      --cream:  #F7EDD8;
+      --parch:  #EFE2C2;
+      --white:  #FDFAF4;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── CURSOR ─────────────────────────────────── */
+    .cursor {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      position: fixed; pointer-events: none;
+      z-index: 9999; transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, opacity .2s;
+      mix-blend-mode: multiply;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+      position: fixed; pointer-events: none;
+      z-index: 9998; transform: translate(-50%,-50%);
+      transition: all .12s ease-out;
+      opacity: .6;
+    }
+
+    /* ─── NAV ─────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 48px;
+      transition: background .4s, padding .4s, backdrop-filter .4s;
+    }
+    nav.scrolled {
+      background: rgba(15,26,12,.88);
+      backdrop-filter: blur(14px);
+      padding: 16px 48px;
+    }
+    .nav-logo {
+      font-family: 'Cormorant', serif;
+      font-size: 1.7rem; font-weight: 500;
+      color: var(--cream); letter-spacing: .04em;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--gilt); font-style: italic; }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: .78rem; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(247,237,216,.75); text-decoration: none;
+      transition: color .25s;
+    }
+    .nav-links a:hover { color: var(--gilt); }
+    .nav-cta {
+      font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--ink); background: var(--gilt);
+      border: none; padding: 11px 26px;
+      font-family: 'Jost', sans-serif;
+      cursor: pointer; transition: background .25s, transform .2s;
+    }
+    .nav-cta:hover { background: var(--gold); transform: translateY(-1px); }
+
+    /* ─── HERO ────────────────────────────────────── */
+    #hero {
+      height: 100vh; min-height: 680px;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(160deg, rgba(15,26,12,.72) 0%, rgba(28,48,38,.55) 50%, rgba(15,26,12,.8) 100%),
+        url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1600&q=80') center/cover no-repeat;
+      transform: scale(1.06);
+      animation: heroZoom 14s ease-in-out infinite alternate;
+    }
+    @keyframes heroZoom {
+      from { transform: scale(1.06); }
+      to   { transform: scale(1.00); }
+    }
+    .hero-grain {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+      opacity: .45;
+    }
+    .hero-content {
+      position: relative; text-align: center;
+      padding: 0 24px;
+    }
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: .72rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--gilt);
+      border-top: 1px solid rgba(232,201,122,.4);
+      border-bottom: 1px solid rgba(232,201,122,.4);
+      padding: 6px 18px; margin-bottom: 32px;
+      opacity: 0; animation: fadeUp .8s .3s forwards;
+    }
+    .hero-title {
+      font-family: 'Cormorant', serif;
+      font-size: clamp(4rem, 10vw, 9rem);
+      font-weight: 400; line-height: .92;
+      color: var(--cream);
+      opacity: 0; animation: fadeUp .9s .55s forwards;
+    }
+    .hero-title em {
+      display: block; font-style: italic;
+      color: var(--gilt); font-weight: 300;
+    }
+    .hero-sub {
+      margin-top: 28px;
+      font-size: clamp(.85rem, 1.8vw, 1rem);
+      color: rgba(247,237,216,.7); letter-spacing: .1em;
+      opacity: 0; animation: fadeUp .8s .8s forwards;
+    }
+    .hero-actions {
+      margin-top: 48px; display: flex; gap: 16px; justify-content: center;
+      opacity: 0; animation: fadeUp .8s 1s forwards;
+    }
+    .btn-primary {
+      background: var(--gilt); color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-size: .8rem; letter-spacing: .16em; text-transform: uppercase;
+      border: none; padding: 16px 38px; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      transition: background .25s, transform .2s;
+    }
+    .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: var(--cream);
+      font-family: 'Jost', sans-serif;
+      font-size: .8rem; letter-spacing: .16em; text-transform: uppercase;
+      border: 1px solid rgba(247,237,216,.4); padding: 16px 38px;
+      text-decoration: none; display: inline-block;
+      transition: border-color .25s, color .25s, transform .2s;
+    }
+    .btn-outline:hover {
+      border-color: var(--gilt); color: var(--gilt);
+      transform: translateY(-2px);
+    }
+    .hero-scroll {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0; animation: fadeUp .7s 1.4s forwards;
+    }
+    .hero-scroll span {
+      font-size: .68rem; letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(247,237,216,.5);
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, rgba(232,201,122,.6), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: .4; transform: scaleY(1); }
+      50%      { opacity: 1;  transform: scaleY(1.1); }
+    }
+    .hero-badge {
+      position: absolute; bottom: 48px; right: 48px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px; opacity: 0; animation: fadeIn 1s 1.6s forwards;
+    }
+    .hero-badge .stars { color: var(--gilt); font-size: 1rem; letter-spacing: 2px; }
+    .hero-badge .rating {
+      font-family: 'Cormorant', serif; font-size: 2.4rem;
+      color: var(--cream); line-height: 1;
+    }
+    .hero-badge .reviews {
+      font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(247,237,216,.55);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    /* ─── MARQUEE STRIP ──────────────────────────── */
+    .strip {
+      background: var(--forest);
+      overflow: hidden; padding: 14px 0;
+      border-top: 1px solid rgba(201,151,62,.2);
+      border-bottom: 1px solid rgba(201,151,62,.2);
+    }
+    .strip-track {
+      display: flex; white-space: nowrap;
+      animation: marquee 26s linear infinite;
+    }
+    .strip-item {
+      font-size: .72rem; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(247,237,216,.55); padding: 0 32px;
+    }
+    .strip-dot { color: var(--gilt); }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ─── SECTION COMMON ─────────────────────────── */
+    section { padding: 120px 0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+    .section-label {
+      font-size: .7rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-label::before {
+      content: ''; display: block;
+      width: 40px; height: 1px; background: var(--gold);
+    }
+    h2.section-title {
+      font-family: 'Cormorant', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 400; line-height: 1.1;
+      color: var(--forest);
+    }
+    h2.section-title em { font-style: italic; color: var(--sage); }
+
+    /* reveal */
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity .7s, transform .7s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .22s; }
+    .reveal-delay-3 { transition-delay: .34s; }
+    .reveal-delay-4 { transition-delay: .46s; }
+
+    /* ─── ABOUT ──────────────────────────────────── */
+    #about { background: var(--white); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .about-img-wrap {
+      position: relative; height: 560px;
+    }
+    .about-img-main {
+      width: 80%; height: 100%; object-fit: cover;
+      position: absolute; right: 0; top: 0;
+      filter: brightness(.95) saturate(1.05);
+    }
+    .about-img-accent {
+      width: 52%; height: 48%;
+      object-fit: cover;
+      position: absolute; left: 0; bottom: 0;
+      border: 6px solid var(--white);
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+    }
+    .about-gold-tag {
+      position: absolute; left: 0; top: 32px;
+      background: var(--gilt); color: var(--ink);
+      font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+      padding: 8px 18px;
+      font-weight: 500;
+    }
+    .about-text p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.22rem; line-height: 1.78;
+      color: #3a3222; margin-bottom: 24px;
+    }
+    .about-stats {
+      display: flex; gap: 48px; margin-top: 40px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(201,151,62,.2);
+    }
+    .stat-num {
+      font-family: 'Cormorant', serif;
+      font-size: 3rem; font-weight: 500; color: var(--forest); line-height: 1;
+    }
+    .stat-label {
+      font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--sage); margin-top: 6px;
+    }
+
+    /* ─── MENU ───────────────────────────────────── */
+    #menu { background: var(--forest); padding: 120px 0; }
+    #menu .section-label { color: var(--gilt); }
+    #menu .section-label::before { background: var(--gilt); }
+    #menu h2.section-title { color: var(--cream); }
+    #menu h2.section-title em { color: var(--gilt); }
+    .menu-intro {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; color: rgba(247,237,216,.65);
+      max-width: 440px; line-height: 1.7; margin-top: 16px;
+    }
+    .menu-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 64px;
+    }
+    .menu-tabs {
+      display: flex; gap: 0;
+      border: 1px solid rgba(232,201,122,.2);
+    }
+    .menu-tab {
+      font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(247,237,216,.5); padding: 11px 22px;
+      border: none; background: transparent;
+      font-family: 'Jost', sans-serif;
+      cursor: pointer; transition: all .25s;
+    }
+    .menu-tab.active, .menu-tab:hover {
+      background: var(--gilt); color: var(--ink);
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+    .menu-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(232,201,122,.08);
+      padding: 32px 28px;
+      position: relative; overflow: hidden;
+      transition: background .3s, border-color .3s, transform .3s;
+      cursor: pointer;
+    }
+    .menu-card::before {
+      content: ''; position: absolute;
+      inset: 0; background: var(--gold);
+      opacity: 0; transition: opacity .3s;
+    }
+    .menu-card:hover {
+      border-color: rgba(232,201,122,.3);
+      transform: translateY(-4px);
+    }
+    .menu-card:hover::before { opacity: .07; }
+    .menu-card-emoji {
+      font-size: 2rem; margin-bottom: 16px; display: block;
+    }
+    .menu-card-name {
+      font-family: 'Cormorant', serif;
+      font-size: 1.25rem; font-weight: 500;
+      color: var(--cream); margin-bottom: 8px;
+    }
+    .menu-card-desc {
+      font-size: .82rem; color: rgba(247,237,216,.5);
+      line-height: 1.6; margin-bottom: 20px;
+    }
+    .menu-card-price {
+      font-family: 'Cormorant', serif;
+      font-size: 1.4rem; color: var(--gilt);
+    }
+    .menu-card-tag {
+      position: absolute; top: 20px; right: 20px;
+      font-size: .62rem; letter-spacing: .14em; text-transform: uppercase;
+      background: rgba(201,151,62,.18); color: var(--gilt);
+      padding: 4px 10px; border-radius: 0;
+    }
+    .menu-cta-wrap {
+      text-align: center; margin-top: 56px;
+    }
+    .menu-cta-wrap p {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.1rem; color: rgba(247,237,216,.5); margin-bottom: 24px;
+    }
+
+    /* ─── EXPERIENCE ─────────────────────────────── */
+    #experience {
+      background: var(--parch);
+      padding: 120px 0;
+    }
+    .exp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px; background: rgba(28,48,38,.1);
+      margin-top: 72px;
+    }
+    .exp-card {
+      background: var(--parch);
+      padding: 56px 48px;
+      position: relative; overflow: hidden;
+      transition: background .3s;
+    }
+    .exp-card:hover { background: var(--cream); }
+    .exp-icon {
+      font-size: 2.4rem; margin-bottom: 28px;
+      display: block;
+    }
+    .exp-title {
+      font-family: 'Cormorant', serif;
+      font-size: 1.6rem; font-weight: 500;
+      color: var(--forest); margin-bottom: 16px;
+    }
+    .exp-desc {
+      font-size: .9rem; line-height: 1.75;
+      color: var(--sage);
+    }
+    .exp-card-num {
+      position: absolute; top: 40px; right: 40px;
+      font-family: 'Cormorant', serif;
+      font-size: 4.5rem; font-weight: 600;
+      color: rgba(28,48,38,.07); line-height: 1;
+    }
+
+    /* ─── REVIEWS ────────────────────────────────── */
+    #reviews { background: var(--white); padding: 120px 0; }
+    .reviews-header {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: end;
+      margin-bottom: 80px;
+    }
+    .review-score {
+      display: flex; align-items: center; gap: 28px;
+    }
+    .score-big {
+      font-family: 'Cormorant', serif;
+      font-size: 7rem; font-weight: 300;
+      color: var(--forest); line-height: 1;
+    }
+    .score-info .stars-row { color: var(--gold); font-size: 1.4rem; letter-spacing: 4px; }
+    .score-info .total {
+      font-size: .8rem; letter-spacing: .12em; color: var(--sage);
+      text-transform: uppercase; margin-top: 6px;
+    }
+    .reviews-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; line-height: 1.7;
+      color: #3a3222;
+    }
+    .reviews-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .review-card {
+      padding: 40px 36px;
+      border: 1px solid rgba(28,48,38,.1);
+      position: relative; overflow: hidden;
+      transition: border-color .3s, transform .3s, box-shadow .3s;
+    }
+    .review-card:hover {
+      border-color: rgba(201,151,62,.4);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(28,48,38,.08);
+    }
+    .review-card::before {
+      content: '\201C';
+      font-family: 'Cormorant', serif;
+      font-size: 7rem; line-height: 1;
+      color: rgba(201,151,62,.12);
+      position: absolute; top: 12px; left: 24px;
+    }
+    .review-stars { color: var(--gold); font-size: .9rem; letter-spacing: 3px; margin-bottom: 20px; }
+    .review-text {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.1rem; line-height: 1.7;
+      color: #3a3222; margin-bottom: 28px;
+      position: relative; z-index: 1;
+    }
+    .review-author {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .review-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--forest); color: var(--gilt);
+      font-family: 'Cormorant', serif; font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600;
+    }
+    .review-name {
+      font-size: .82rem; font-weight: 500; letter-spacing: .06em;
+      color: var(--forest);
+    }
+    .review-date { font-size: .72rem; color: var(--sage); margin-top: 2px; }
+    .google-badge {
+      margin-top: 56px; text-align: center;
+    }
+    .google-badge a {
+      font-size: .78rem; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--gold); text-decoration: none;
+      border-bottom: 1px solid rgba(201,151,62,.3);
+      padding-bottom: 2px; transition: color .25s, border-color .25s;
+    }
+    .google-badge a:hover { color: var(--forest); border-color: var(--forest); }
+
+    /* ─── FULL BG QUOTE ──────────────────────────── */
+    #quote-banner {
+      background:
+        linear-gradient(rgba(15,26,12,.76), rgba(15,26,12,.76)),
+        url('https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=1400&q=80') center/cover fixed;
+      padding: 140px 48px;
+      text-align: center;
+    }
+    .quote-text {
+      font-family: 'Cormorant', serif; font-style: italic;
+      font-size: clamp(1.8rem, 4vw, 3.4rem);
+      font-weight: 300; color: var(--cream);
+      max-width: 820px; margin: 0 auto;
+      line-height: 1.4;
+    }
+    .quote-text em { color: var(--gilt); }
+    .quote-attr {
+      margin-top: 32px;
+      font-size: .75rem; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(232,201,122,.5);
+    }
+
+    /* ─── RESERVE ────────────────────────────────── */
+    #reserve {
+      background: var(--forest);
+      padding: 120px 0;
+    }
+    #reserve .section-label { color: var(--gilt); }
+    #reserve .section-label::before { background: var(--gilt); }
+    #reserve h2.section-title { color: var(--cream); }
+    #reserve h2.section-title em { color: var(--gilt); }
+    .reserve-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 100px; align-items: start;
+      margin-top: 64px;
+    }
+    .reserve-info p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; line-height: 1.8;
+      color: rgba(247,237,216,.7); margin-bottom: 36px;
+    }
+    .info-items { display: flex; flex-direction: column; gap: 20px; }
+    .info-item {
+      display: flex; gap: 18px; align-items: flex-start;
+    }
+    .info-item-icon {
+      width: 40px; height: 40px;
+      border: 1px solid rgba(232,201,122,.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .info-item-text strong {
+      display: block; font-size: .8rem; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--gilt);
+      margin-bottom: 4px; font-weight: 500;
+    }
+    .info-item-text span {
+      font-size: .92rem; color: rgba(247,237,216,.65);
+      line-height: 1.6;
+    }
+    .reserve-form { display: flex; flex-direction: column; gap: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label {
+      font-size: .68rem; letter-spacing: .18em; text-transform: uppercase;
+      color: rgba(232,201,122,.6);
+    }
+    .field input, .field select, .field textarea {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(232,201,122,.18);
+      color: var(--cream);
+      font-family: 'Jost', sans-serif; font-size: .9rem;
+      padding: 14px 18px; outline: none;
+      transition: border-color .25s, background .25s;
+      -webkit-appearance: none;
+    }
+    .field select option { background: var(--forest); }
+    .field textarea { resize: none; height: 100px; }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: rgba(232,201,122,.5);
+      background: rgba(255,255,255,.08);
+    }
+    .field input::placeholder, .field textarea::placeholder { color: rgba(247,237,216,.25); }
+    .form-submit {
+      background: var(--gilt); color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-size: .8rem; letter-spacing: .18em; text-transform: uppercase;
+      border: none; padding: 18px;
+      cursor: pointer; margin-top: 8px;
+      transition: background .25s, transform .2s;
+    }
+    .form-submit:hover { background: var(--gold); transform: translateY(-2px); }
+    .form-note {
+      font-size: .76rem; color: rgba(247,237,216,.35);
+      text-align: center; margin-top: 4px;
+    }
+
+    /* ─── GALLERY STRIP ─────────────────────────── */
+    .gallery-strip {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      height: 340px;
+    }
+    .gallery-strip-item {
+      overflow: hidden; position: relative;
+    }
+    .gallery-strip-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .6s ease, filter .4s;
+      filter: brightness(.85) saturate(.9);
+    }
+    .gallery-strip-item:hover img {
+      transform: scale(1.08); filter: brightness(1) saturate(1.1);
+    }
+    .gallery-strip-item::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(15,26,12,.4) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      padding: 72px 0 40px;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px; margin-bottom: 56px;
+    }
+    .footer-brand .logo {
+      font-family: 'Cormorant', serif;
+      font-size: 2rem; font-weight: 400;
+      color: var(--cream); letter-spacing: .04em;
+      margin-bottom: 16px;
+    }
+    .footer-brand .logo span { color: var(--gilt); font-style: italic; }
+    .footer-brand p {
+      font-size: .88rem; color: rgba(247,237,216,.4);
+      line-height: 1.75; max-width: 300px;
+    }
+    .footer-col h4 {
+      font-size: .7rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--gilt); margin-bottom: 24px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col ul li a {
+      font-size: .88rem; color: rgba(247,237,216,.45);
+      text-decoration: none; transition: color .25s;
+    }
+    .footer-col ul li a:hover { color: var(--gilt); }
+    .footer-col ul li span { font-size: .88rem; color: rgba(247,237,216,.45); }
+    .footer-divider {
+      height: 1px; background: rgba(255,255,255,.07); margin-bottom: 32px;
+    }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-bottom p {
+      font-size: .75rem; color: rgba(247,237,216,.25);
+    }
+    .footer-bottom p a {
+      color: rgba(232,201,122,.4); text-decoration: none;
+    }
+    .social-row { display: flex; gap: 16px; }
+    .social-btn {
+      width: 38px; height: 38px;
+      border: 1px solid rgba(232,201,122,.18);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(232,201,122,.5); font-size: .85rem;
+      text-decoration: none; transition: all .25s;
+    }
+    .social-btn:hover {
+      border-color: var(--gilt); color: var(--gilt);
+      background: rgba(232,201,122,.08);
+    }
+
+    /* ─── MOBILE ──────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      nav.scrolled { padding: 14px 24px; }
+      .nav-links { display: none; }
+      .container { padding: 0 24px; }
+      section { padding: 80px 0; }
+      .about-grid, .reserve-grid, .reviews-header { grid-template-columns: 1fr; gap: 40px; }
+      .about-img-wrap { height: 320px; }
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+      .exp-grid { grid-template-columns: 1fr; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .gallery-strip { grid-template-columns: repeat(3,1fr); height: 220px; }
+      .gallery-strip-item:nth-child(n+4) { display: none; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 36px; }
+      .hero-badge { display: none; }
+      .menu-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .menu-tabs { flex-wrap: wrap; }
+      .form-row { grid-template-columns: 1fr; }
+      #quote-banner { background-attachment: scroll; }
+    }
+    @media (max-width: 560px) {
+      .menu-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Daphne's <span>Café</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">Story</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#reserve">Visit Us</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('reserve').scrollIntoView({behavior:'smooth'})">
+    Reserve a Table
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Est. Guwahati · Assam · India</div>
+    <h1 class="hero-title">
+      Daphne's<br>
+      <em>Café</em>
+    </h1>
+    <p class="hero-sub">Where every cup tells a story &nbsp;·&nbsp; MG Road, Guwahati</p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-primary">Explore Menu</a>
+      <a href="#reserve" class="btn-outline">Book a Table</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+  <div class="hero-badge">
+    <div class="stars">★★★★★</div>
+    <div class="rating">4.6</div>
+    <div class="reviews">3,400+ Google Reviews</div>
+  </div>
+</section>
+
+<!-- MARQUEE STRIP -->
+<div class="strip">
+  <div class="strip-track">
+    <span class="strip-item">Blueberry Cheesecake <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Caramel Coffee <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Daphne's Signature Chocolate Cake <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Falafel Wrap <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Mango Spiced Picante <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Kunafa Cheesecake <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Sangria <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Avocado Chaat <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Cappuccino <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Garden Fresh <span class="strip-dot">◆</span></span>
+    <!-- repeat for infinite loop -->
+    <span class="strip-item">Blueberry Cheesecake <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Caramel Coffee <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Daphne's Signature Chocolate Cake <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Falafel Wrap <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Mango Spiced Picante <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Kunafa Cheesecake <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Sangria <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Avocado Chaat <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Cappuccino <span class="strip-dot">◆</span></span>
+    <span class="strip-item">Garden Fresh <span class="strip-dot">◆</span></span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap reveal">
+        <img class="about-img-main"
+          src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=800&q=80"
+          alt="Daphne's Cafe interior">
+        <img class="about-img-accent"
+          src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&q=80"
+          alt="Cafe pastry">
+        <div class="about-gold-tag">Since Day One</div>
+      </div>
+      <div class="about-text">
+        <div class="section-label reveal">Our Story</div>
+        <h2 class="section-title reveal reveal-delay-1">A Café Born of<br><em>Warmth & Wonder</em></h2>
+        <p class="reveal reveal-delay-2" style="margin-top:28px">
+          Nestled along MG Road in the heart of Guwahati, Daphne's Café was built on a simple belief — that great food and genuine hospitality can transform an ordinary afternoon into something you carry with you forever.
+        </p>
+        <p class="reveal reveal-delay-2">
+          From our Signature Chocolate Cake to hand-crafted mocktails and hearty mains, every item on our menu is a labour of love. We source fresh, think creative, and serve with pride.
+        </p>
+        <div class="about-stats reveal reveal-delay-3">
+          <div>
+            <div class="stat-num">4.6<span style="font-size:1.6rem;color:var(--gold)">★</span></div>
+            <div class="stat-label">Google Rating</div>
+          </div>
+          <div>
+            <div class="stat-num">3.4K</div>
+            <div class="stat-label">Happy Reviews</div>
+          </div>
+          <div>
+            <div class="stat-num">50+</div>
+            <div class="stat-label">Menu Items</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="container">
+    <div class="menu-header">
+      <div>
+        <div class="section-label reveal">Curated Selections</div>
+        <h2 class="section-title reveal reveal-delay-1">Our <em>Signature</em><br>Favourites</h2>
+        <p class="menu-intro reveal reveal-delay-2">Crafted with care, plated with love — a taste of what awaits you.</p>
+      </div>
+      <div class="menu-tabs reveal reveal-delay-2">
+        <button class="menu-tab active" data-cat="all">All</button>
+        <button class="menu-tab" data-cat="drinks">Drinks</button>
+        <button class="menu-tab" data-cat="food">Food</button>
+        <button class="menu-tab" data-cat="desserts">Desserts</button>
+      </div>
+    </div>
+    <div class="menu-grid" id="menuGrid">
+      <!-- filled by JS -->
+    </div>
+    <div class="menu-cta-wrap reveal">
+      <p>Craving something more? Our full menu awaits.</p>
+      <a href="https://www.swiggy.com" target="_blank" class="btn-primary" style="text-decoration:none">Order Online via Swiggy</a>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="section-label reveal">Why Daphne's</div>
+    <h2 class="section-title reveal reveal-delay-1">The Full <em>Experience</em></h2>
+    <div class="exp-grid">
+      <div class="exp-card reveal reveal-delay-1">
+        <span class="exp-icon">☕</span>
+        <div class="exp-card-num">01</div>
+        <div class="exp-title">Exceptional Craft</div>
+        <p class="exp-desc">Every brew, bake, and bite is crafted with obsessive attention to detail. We don't cut corners — we perfect them.</p>
+      </div>
+      <div class="exp-card reveal reveal-delay-2">
+        <span class="exp-icon">✨</span>
+        <div class="exp-card-num">02</div>
+        <div class="exp-title">Warm Ambience</div>
+        <p class="exp-desc">Our guests love the décor. Warm lighting, curated interiors, and a space that genuinely invites you to linger longer.</p>
+      </div>
+      <div class="exp-card reveal reveal-delay-3">
+        <span class="exp-icon">🤝</span>
+        <div class="exp-card-num">03</div>
+        <div class="exp-title">Genuine Hospitality</div>
+        <p class="exp-desc">"Staff behaviour very nice" — our guests say it best. Every person who walks in leaves feeling like a regular.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY STRIP -->
+<div class="gallery-strip">
+  <div class="gallery-strip-item">
+    <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=500&q=80" alt="Cafe coffee">
+  </div>
+  <div class="gallery-strip-item">
+    <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&q=80" alt="Cake">
+  </div>
+  <div class="gallery-strip-item">
+    <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=500&q=80" alt="Cafe interior">
+  </div>
+  <div class="gallery-strip-item">
+    <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=500&q=80" alt="French toast">
+  </div>
+  <div class="gallery-strip-item">
+    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&q=80" alt="Latte art">
+  </div>
+</div>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="container">
+    <div class="reviews-header">
+      <div>
+        <div class="section-label reveal">Guest Voices</div>
+        <h2 class="section-title reveal reveal-delay-1">Moments That <em>Matter</em></h2>
+        <div class="review-score reveal reveal-delay-2" style="margin-top:28px">
+          <div class="score-big">4.6</div>
+          <div class="score-info">
+            <div class="stars-row">★★★★★</div>
+            <div class="total">3,364 Google Reviews</div>
+          </div>
+        </div>
+      </div>
+      <p class="reviews-desc reveal reveal-delay-2">
+        From first-timers to daily regulars — our guests keep coming back. Here's what they have to say about their time with us.
+      </p>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card reveal reveal-delay-1">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Food very tasty, service very good and staff behaviour very nice. Will definitely come back again and again."</p>
+        <div class="review-author">
+          <div class="review-avatar">P</div>
+          <div>
+            <div class="review-name">Priya S.</div>
+            <div class="review-date">Google Review · 2024</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-2">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"I ordered the Grilled Chicken Burger, Kunafa Cheesecake and Mango Mule Mocktail — all three were absolutely phenomenal."</p>
+        <div class="review-author">
+          <div class="review-avatar">A</div>
+          <div>
+            <div class="review-name">Arnav M.</div>
+            <div class="review-date">Google Review · 2024</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-3">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The only thing about this place is the decor and ambience! Absolutely stunning. You walk in and feel the vibe immediately."</p>
+        <div class="review-author">
+          <div class="review-avatar">R</div>
+          <div>
+            <div class="review-name">Rishika B.</div>
+            <div class="review-date">Google Review · 2024</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="google-badge reveal">
+      <a href="https://maps.google.com" target="_blank">Read all 3,400+ reviews on Google →</a>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE BANNER -->
+<div id="quote-banner">
+  <p class="quote-text reveal">"Great food is not just a meal — it's a <em>memory made</em> with every bite."</p>
+  <p class="quote-attr reveal reveal-delay-1">Daphne's Café · Guwahati, Assam</p>
+</div>
+
+<!-- RESERVE -->
+<section id="reserve">
+  <div class="container">
+    <div class="section-label reveal">Come Visit Us</div>
+    <h2 class="section-title reveal reveal-delay-1">Reserve Your <em>Table</em></h2>
+    <div class="reserve-grid">
+      <div class="reserve-info reveal reveal-delay-1">
+        <p>Whether it's a quiet evening for two, a birthday celebration, or a catch-up with old friends — we'd love to set the perfect table for you.</p>
+        <div class="info-items">
+          <div class="info-item">
+            <div class="info-item-icon">📍</div>
+            <div class="info-item-text">
+              <strong>Location</strong>
+              <span>MG Rd, Machkhowa, Guwahati,<br>Assam 781009</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-icon">📞</div>
+            <div class="info-item-text">
+              <strong>Reservations</strong>
+              <span>+91 99356 76567</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-icon">🕐</div>
+            <div class="info-item-text">
+              <strong>Hours</strong>
+              <span>Open Daily &nbsp;·&nbsp; Closes 11:30 PM</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-icon">🛵</div>
+            <div class="info-item-text">
+              <strong>Online Orders</strong>
+              <span>Available on Swiggy & Zomato</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <form class="reserve-form" onsubmit="handleReserve(event)">
+          <div class="form-row">
+            <div class="field">
+              <label>Full Name</label>
+              <input type="text" placeholder="Your name">
+            </div>
+            <div class="field">
+              <label>Phone Number</label>
+              <input type="tel" placeholder="+91 XXXXX XXXXX">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Date</label>
+              <input type="date">
+            </div>
+            <div class="field">
+              <label>Time</label>
+              <input type="time">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Guests</label>
+              <select>
+                <option>1 Guest</option>
+                <option>2 Guests</option>
+                <option>3–4 Guests</option>
+                <option>5–6 Guests</option>
+                <option>7+ Guests</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Occasion</label>
+              <select>
+                <option>Casual Dining</option>
+                <option>Birthday</option>
+                <option>Anniversary</option>
+                <option>Business Lunch</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Special Requests</label>
+            <textarea placeholder="Any dietary requirements or special notes..."></textarea>
+          </div>
+          <button type="submit" class="form-submit">Request Reservation</button>
+          <p class="form-note">Or call us directly: +91 99356 76567</p>
+        </form>
+        <div id="form-success" style="display:none;text-align:center;padding:60px 20px">
+          <div style="font-size:3rem;margin-bottom:16px">🌿</div>
+          <div style="font-family:'Cormorant',serif;font-size:2rem;color:var(--gilt);margin-bottom:12px">Thank You!</div>
+          <p style="color:rgba(247,237,216,.65);font-size:.95rem">We've received your request and will confirm shortly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo">Daphne's <span>Café</span></div>
+        <p>A beloved gathering place on MG Road, Guwahati. Good food, great company, and a corner of the city that always feels like home.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#about">Our Story</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+          <li><a href="#reserve">Reserve</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Hours</h4>
+        <ul>
+          <li><span>Mon–Thu &nbsp; Open–11:30 PM</span></li>
+          <li><span>Fri–Sat &nbsp;&nbsp;&nbsp; Open–11:30 PM</span></li>
+          <li><span>Sunday &nbsp;&nbsp;&nbsp; Open–11:30 PM</span></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><span>+91 99356 76567</span></li>
+          <li><span>MG Rd, Machkhowa</span></li>
+          <li><span>Guwahati, Assam 781009</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <p>© 2025 Daphne's Café. All rights reserved. · <a href="#">Privacy</a></p>
+      <div class="social-row">
+        <a href="#" class="social-btn" title="Instagram">IG</a>
+        <a href="#" class="social-btn" title="Facebook">FB</a>
+        <a href="https://maps.google.com" target="_blank" class="social-btn" title="Google Maps">G</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── cursor ── */
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let rx=0,ry=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{
+    cx=e.clientX; cy=e.clientY;
+    cur.style.left=cx+'px'; cur.style.top=cy+'px';
+  });
+  (function animate(){
+    rx+=(cx-rx)*.15; ry+=(cy-ry)*.15;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animate);
+  })();
+
+  /* ── nav scroll ── */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', ()=>{
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  /* ── reveal on scroll ── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+  },{threshold:.12});
+  revealEls.forEach(el=>io.observe(el));
+
+  /* ── menu data ── */
+  const menuItems = [
+    {cat:'desserts', emoji:'🍰', name:'Blueberry Cheesecake', desc:'Velvety cream cheese with a blueberry compote on a buttery biscuit base.', price:'₹320', tag:'Bestseller'},
+    {cat:'drinks',   emoji:'☕', name:'Caramel Coffee',       desc:'Our house espresso swirled with house-made caramel and steamed milk.', price:'₹220', tag:'Popular'},
+    {cat:'food',     emoji:'🌯', name:'Falafel Wrap',         desc:'Crispy falafels, pickled slaw, tahini sauce, wrapped in a charred flatbread.', price:'₹280', tag:''},
+    {cat:'drinks',   emoji:'🥭', name:'Mango Spiced Picante', desc:'Fresh mango, chilli, lime — a mocktail that bites back beautifully.', price:'₹240', tag:'Chef\'s Pick'},
+    {cat:'desserts', emoji:'🎂', name:'Signature Choc Cake',  desc:'Daphne\'s legendary creation — layers of dark chocolate ganache and mousse.', price:'₹380', tag:'Iconic'},
+    {cat:'food',     emoji:'🥑', name:'Avocado Chaat',        desc:'An Indo-fusion twist — creamy avocado with tamarind, sev, and spices.', price:'₹260', tag:''},
+    {cat:'food',     emoji:'🍗', name:'Butter Chicken & Rice',desc:'Slow-cooked murgh makhani with fragrant steam rice and naan.', price:'₹380', tag:''},
+    {cat:'drinks',   emoji:'🍷', name:'Sangria',              desc:'House red wine with fresh seasonal fruits and a hint of citrus zest.', price:'₹350', tag:'Sundowner'},
+    {cat:'desserts', emoji:'🍮', name:'Kunafa Cheesecake',    desc:'Middle-Eastern meets New York — crispy kunafa crust, silky cheesecake filling.', price:'₹340', tag:'New'},
+    {cat:'drinks',   emoji:'☕', name:'Cappuccino',           desc:'A perfectly balanced double shot with microfoam art. Classic, always.', price:'₹180', tag:''},
+    {cat:'food',     emoji:'🥗', name:'Garden Fresh',         desc:'Seasonal greens, cherry tomatoes, cucumber, feta, with a lemon-herb dressing.', price:'₹240', tag:'Healthy'},
+    {cat:'desserts', emoji:'🧁', name:'Cupcakes',             desc:'Daily-baked rotation of flavours — ask your server for today\'s selection.', price:'₹120', tag:''},
+  ];
+
+  function renderMenu(cat='all'){
+    const grid = document.getElementById('menuGrid');
+    const items = cat==='all'? menuItems : menuItems.filter(i=>i.cat===cat);
+    grid.innerHTML = items.map(i=>`
+      <div class="menu-card">
+        ${i.tag? `<div class="menu-card-tag">${i.tag}</div>`:''}
+        <span class="menu-card-emoji">${i.emoji}</span>
+        <div class="menu-card-name">${i.name}</div>
+        <div class="menu-card-desc">${i.desc}</div>
+        <div class="menu-card-price">${i.price}</div>
+      </div>`).join('');
+  }
+  renderMenu();
+
+  document.querySelectorAll('.menu-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.menu-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderMenu(btn.dataset.cat);
+    });
+  });
+
+  /* ── reservation form ── */
+  function handleReserve(e){
+    e.preventDefault();
+    document.querySelector('.reserve-form').style.display='none';
+    document.getElementById('form-success').style.display='block';
+  }
+</script>
+</body>
+</html>
